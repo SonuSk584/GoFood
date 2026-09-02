@@ -1,0 +1,30 @@
+
+
+import axios from "axios";
+
+const client = axios.create({
+  baseURL: import.meta.env.VITE_API_URL || "http://localhost:5000/api",
+});
+
+client.interceptors.request.use((config) => {
+  const token = localStorage.getItem("token");
+  if (token) {
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
+
+client.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    if (error.response?.status === 401) {
+      // Token expired/invalid — clear it so the app doesn't keep sending
+      // a dead token. Hook this up to your logout()/navigate("/") if you
+      // want an automatic redirect to login here.
+      localStorage.removeItem("token");
+    }
+    return Promise.reject(error);
+  }
+);
+
+export default client;

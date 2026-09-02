@@ -1,0 +1,56 @@
+/* src/styles/keyframes.css
+   Every raw CSS @keyframes animation used across GoFood, plus the shared
+   font import used by the "frosted card" pages (Cart, OrderDetails), in
+   one place. Import this ONCE in your app entry (e.g. main.jsx / App.jsx):
+
+     import "./styles/keyframes.css";
+
+   Then delete the per-page <style>{`@keyframes ...`}</style> /
+   <style>{`@import url(...)`}</style> blocks.
+*/
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Cormorant+Garamond:wght@400;500;600&display=swap');
+
+/* Home.jsx — logo letters bounce as the delivery bike passes under them */
+@keyframes letterBounce {
+  0%   { transform: translateY(0); }
+  30%  { transform: translateY(-9px); }
+  60%  { transform: translateY(-4px); }
+  80%  { transform: translateY(-7px); }
+  100% { transform: translateY(0); }
+}
+
+@keyframes bikeRide {
+  0%   { left: -20px; }
+  100% { left: 138px; }
+}
+
+/* Login.jsx — floating food emojis in the background */
+@keyframes floatUp {
+  0%   { opacity: 0; transform: translateY(0); }
+  10%  { opacity: 0.9; }
+  90%  { opacity: 0.9; }
+  100% { opacity: 0; transform: translateY(-90vh); }
+}
+
+/* Signup.jsx — shimmering top bar on the signup card */
+@keyframes sgShimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+/* Signup.jsx — logo icon dropping in on mount */
+@keyframes sgIconDrop {
+  from { transform: translateY(-18px); opacity: 0; }
+  60%  { transform: translateY(4px);   opacity: 1; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
+/* Signup.jsx — error message shake */
+@keyframes sgShake {
+  0%,100% { transform: translateX(0); }
+  20%     { transform: translateX(-6px); }
+  40%     { transform: translateX(6px); }
+  60%     { transform: translateX(-4px); }
+  80%     { transform: translateX(4px); }
+}
