@@ -108,7 +108,7 @@ exports.login = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("+password");
     if (!user) return res.status(400).json({ msg: "Invalid credentials ❌" });
 
     if (!user.isVerified) {
@@ -121,6 +121,10 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d"
     });
+
+    // Explicitly fetched password for the compare() above — strip it
+    // before sending the user back to the client.
+    user.password = undefined;
 
     res.json({ token, user });
 
@@ -159,6 +163,12 @@ exports.googleLogin = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
       expiresIn: "7d"
     });
+
+    // User.create() returns the freshly-created document, which still
+    // includes the "google_oauth" placeholder value (select:false only
+    // filters query results, not documents you just created) — strip it
+    // before responding, same as login.
+    user.password = undefined;
 
     res.json({ token, user });
 
