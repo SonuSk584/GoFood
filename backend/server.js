@@ -8,10 +8,6 @@ const app = express();
 
 connectDB();
 
-// If deployed behind a reverse proxy (Render, Railway, Vercel, etc.),
-// this makes req.ip resolve to the real client IP instead of the proxy's —
-// needed for express-rate-limit (used in authRoutes.js) to work correctly
-// once this is live rather than just local.
 app.set('trust proxy', 1);
 
 app.use(helmet());
