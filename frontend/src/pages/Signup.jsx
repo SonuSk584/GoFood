@@ -34,7 +34,8 @@ function Signup() {
     try {
       setLoading(true);
       const res = await client.post("/auth/signup", { ...form, location });
-      setSuccess(res.data.msg || "Check your email to verify 📧");
+      setSuccess(res.data.msg || "Check your email to verify 📧") + 
+      ("Note: if you don't see it in your inbox, check your spam folder");
     } catch (err) {
       setError(err.response?.data?.msg || "Signup failed ❌");
     } finally {
