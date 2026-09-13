@@ -66,7 +66,7 @@ exports.signup = async (req, res) => {
       verifyToken
     });
 
-    const verifyLink = `${process.env.BACKEND_URL}/api/auth/verify/${verifyToken}`;
+    const verifyLink = `${process.env.FRONTEND_URL}/verify-email/${verifyToken}`;
 
     await sendVerificationEmail(email, verifyLink);
 
@@ -97,7 +97,7 @@ exports.verifyEmail = async (req, res) => {
     const user = await User.findOne({ verifyToken: req.params.token });
 
     if (!user) {
-      return res.status(400).send("Invalid or expired token ❌");
+      return res.status(400).json({ msg: "This link is invalid or has expired." });
     }
 
     user.isVerified = true;
@@ -105,7 +105,7 @@ exports.verifyEmail = async (req, res) => {
 
     await user.save();
 
-    res.send("Email verified successfully ✅");
+    res.json({ msg: "Your email has been verified. You can now log in!" });
 
   } catch (err) {
     res.status(500).json({ error: err.message });

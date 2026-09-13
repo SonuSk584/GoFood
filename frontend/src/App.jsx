@@ -6,8 +6,10 @@ import Signup from "./pages/Signup.jsx";
 import Home from "./pages/Home.jsx";
 import Cart from "./pages/Cart.jsx";
 import Orders from "./pages/Orders.jsx";
+import OrderDetails from "./pages/OrderDetails.jsx";
 import Profile from "./pages/Profile.jsx";
 import Admin from "./pages/Admin.jsx";
+import VerifyEmail from "./pages/VerifyEmail.jsx";
 import ProtectedRoute from "./components/ProtectedRoute.jsx";
 import OrderPlaced from "./components/OrderPlaced";
 
@@ -17,23 +19,44 @@ function App() {
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
+        <Route path="/verify-email/:token" element={<VerifyEmail />} />
         <Route path="/home" element={
           <ProtectedRoute>
             <Home />
           </ProtectedRoute>
         } />
-        <Route path="/cart" element={<Cart />} />
-        <Route path="/orders" element={<Orders />} />
-        <Route path="/profile" element={<Profile />} />
+        <Route path="/cart" element={
+          <ProtectedRoute>
+            <Cart />
+          </ProtectedRoute>
+        } />
+        <Route path="/orders" element={
+          <ProtectedRoute>
+            <Orders />
+          </ProtectedRoute>
+        } />
+        <Route path="/order/:id" element={
+          <ProtectedRoute>
+            <OrderDetails />
+          </ProtectedRoute>
+        } />
+        <Route path="/profile" element={
+          <ProtectedRoute>
+            <Profile />
+          </ProtectedRoute>
+        } />
         <Route path="/admin" element={
           <ProtectedRoute>
             <Admin />
           </ProtectedRoute>
         } />
-        <Route path="/order-placed" element={<OrderPlaced />} />
+        <Route path="/order-placed" element={
+          <ProtectedRoute>
+            <OrderPlaced />
+          </ProtectedRoute>
+        } />
       </Routes>
     </BrowserRouter>
-
   );
 }
 
