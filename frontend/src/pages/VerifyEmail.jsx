@@ -5,7 +5,7 @@ import client from "../api/client";
 import DecorativeRings from "../components/motion/DecorativeRings";
 import AccentBar from "../components/motion/AccentBar";
 import Watermark from "../components/motion/Watermark";
-import AnimatedCheckmark from "../componentts/motion/AnimatedCheckmark";
+import AnimatedCheckmark from "../components/motion/Animatedcheckmark";
 import AnimatedCross from "../components/motion/AnimatedCross";
 import { cardEntrance, fade } from "../animations/variants";
 
