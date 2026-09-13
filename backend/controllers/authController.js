@@ -2,19 +2,36 @@ const User = require('../models/User');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const crypto = require("crypto");
-const nodemailer = require("nodemailer");
 const { OAuth2Client } = require("google-auth-library");
 
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
-// 📧 EMAIL SETUP
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: process.env.EMAIL,
-    pass: process.env.EMAIL_PASS
+// 📧 EMAIL — sent via Brevo's HTTP API instead of SMTP.
+// Render's free tier blocks outbound SMTP ports (25/465/587) as of
+// Sept 2025 to prevent spam abuse, which is why nodemailer + Gmail SMTP
+// worked locally but timed out (ETIMEDOUT) in production. Brevo's API
+// runs over plain HTTPS (port 443), which isn't blocked.
+async function sendVerificationEmail(to, verifyLink) {
+  const res = await fetch("https://api.brevo.com/v3/smtp/email", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "api-key": process.env.BREVO_API_KEY,
+    },
+    body: JSON.stringify({
+      sender: { email: process.env.EMAIL, name: "GoFood" },
+      to: [{ email: to }],
+      subject: "Verify your GoFood account",
+      htmlContent: `<h3>Click below to verify your account:</h3>
+                    <a href="${verifyLink}">${verifyLink}</a>`,
+    }),
+  });
+
+  if (!res.ok) {
+    const errBody = await res.text();
+    throw new Error(`Brevo send failed: ${res.status} ${errBody}`);
   }
-});
+}
 
 
 // =======================
@@ -51,12 +68,7 @@ exports.signup = async (req, res) => {
 
     const verifyLink = `${process.env.BACKEND_URL}/api/auth/verify/${verifyToken}`;
 
-    await transporter.sendMail({
-      to: email,
-      subject: "Verify your GoFood account",
-      html: `<h3>Click below to verify your account:</h3>
-             <a href="${verifyLink}">${verifyLink}</a>`
-    });
+    await sendVerificationEmail(email, verifyLink);
 
     res.json({ msg: "Signup successful. Please verify your email 📧" });
 
